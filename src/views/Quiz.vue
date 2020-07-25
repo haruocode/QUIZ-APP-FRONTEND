@@ -27,15 +27,48 @@
       </div>
 
       <div class="answer-btn">
-        <v-btn depressed x-large block color="primary">回答する</v-btn>
+        <v-btn depressed x-large block color="primary" @click.stop="dialog = true">回答する</v-btn>
       </div>
+
+      <v-dialog v-model="dialog" persistent max-width="600">
+        <div class="py-8 white">
+          <div v-if="true" class="text-center blue--text judge-text">〇正解！</div>
+          <div v-else class="text-center red--text judge-text">✖不正解</div>
+          <div class="text-center font-weight-bold answer-text">正解は「A. 富士山」</div>
+          <div class="py-3 px-6">説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明。</div>
+          <div class="text-center mb-2">
+            <v-btn depressed x-large color="cyan darken-1 white--text" @click.stop="dialog = false">次の問題</v-btn>
+          </div>
+          <div class="text-center">
+            <v-btn text color="primary" @click.stop="dialog = false">やめる</v-btn>
+          </div>
+        </div>
+      </v-dialog>
 
     </div>
 
   </v-container>
 </template>
 
+<script>
+export default {
+  data () {
+    return {
+      dialog: false
+    }
+  }
+}
+</script>
+
 <style>
+  .judge-text {
+    font-size: 40px;
+  }
+
+  .answer-text {
+    font-size: 22px;
+  }
+
   #answers {
     margin-top: 10px;
   }
