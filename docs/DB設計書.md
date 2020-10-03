@@ -42,7 +42,7 @@
 |  カラム名  |  データ型  |  NULL  |  デフォルト値  |  コメント  |
 | ---- | ---- | ---- | ---- | ---- |
 |  id  |  int  |  ×  |  -  |  auto_increment  |
-|  sub_category_id  |  int  |  ×  |  -  |  どのサブカテゴリーに属するか  |
+|  sub_category_id  |  int  |  ×  |  -  |  どのタイトルに属するか  |
 |  title  |  varchar(255)  |  ×  |  -  |  クイズのタイトル名  |
 |  description  |  text  |  ×  |  -  |  クイズタイトルの説明  |
 |  thumbnail  |  varchar(255)  |  ×  |  -  |  クイズタイトルのサムネイルのファイル名  |
