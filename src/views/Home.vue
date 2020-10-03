@@ -65,12 +65,12 @@ export default class Home extends Vue {
   categories = []
 
   async getNewTitles() {
-    const { data } = await axios.get('http://localhost/api/titles/new')
+    const { data } = await axios.get('/titles/new')
     return data
   }
 
   async getCategories() {
-    const { data } = await axios.get('http://localhost/api/categories')
+    const { data } = await axios.get('/categories')
     return data
   }
 
