@@ -12,7 +12,7 @@ const routes: Array<RouteConfig> = [
     component: Home
   },
   {
-    path: '/list',
+    path: '/list/:id',
     name: 'List',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
@@ -20,7 +20,7 @@ const routes: Array<RouteConfig> = [
     component: () => import(/* webpackChunkName: "list" */ '../views/List.vue')
   },
   {
-    path: '/quiz',
+    path: '/quiz/:titleId/:quizId?',
     name: 'Quiz',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
