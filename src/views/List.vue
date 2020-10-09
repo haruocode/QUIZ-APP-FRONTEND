@@ -1,15 +1,15 @@
 <template>
   <v-container>
     <h1 class="text-center">クイズ一覧</h1>
-    <h2 class="text-center">カテゴリー名</h2>
+    <h2 class="text-center">{{ categoryName }}</h2>
     <v-row>
       <v-col
-        v-for="(item, i) in items"
+        v-for="(title, i) in titles"
         :key="i"
         cols="12"
       >
         <v-card
-          :color="item.color"
+          @click="$router.push('/quiz/' + title.id)"
         >
           <div class="d-flex">
             <v-avatar
@@ -22,10 +22,10 @@
             <div>
               <v-card-title
                 class="headline"
-                v-text="item.title"
+                v-text="title.title"
               ></v-card-title>
 
-              <v-card-subtitle v-text="item.description"></v-card-subtitle>
+              <v-card-subtitle v-text="title.description"></v-card-subtitle>
             </div>
           </div>
         </v-card>
@@ -35,7 +35,8 @@
         <div class="text-center">
           <v-pagination
             v-model="page"
-            :length="6"
+            :length="total"
+            @input="onPagenationClick()"
           ></v-pagination>
         </div>
       </v-col>
@@ -43,59 +44,43 @@
   </v-container>
 </template>
 
-<script>
-// @ is an alias to /src
-// import HelloWorld from '@/components/HelloWorld.vue'
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator'
+import axios from 'axios'
 
-export default {
-  name: 'Home',
-  components: {},
-  data: () => ({
-    page: 3,
-    items: [
-      {
-        color: '#FFF',
-        src: '../assets/logo.png',
-        title: 'クイズタイトル',
-        description: 'Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.'
-      },
-      {
-        color: '#FFF',
-        src: 'https://cdn.vuetifyjs.com/images/cards/halcyon.png',
-        title: 'クイズタイトル',
-        description: 'Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.'
-      },
-      {
-        color: '#FFF',
-        src: 'https://cdn.vuetifyjs.com/images/cards/halcyon.png',
-        title: 'クイズタイトル',
-        description: 'Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.'
-      },
-      {
-        color: '#FFF',
-        src: 'https://cdn.vuetifyjs.com/images/cards/halcyon.png',
-        title: 'クイズタイトル',
-        description: 'Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.'
-      },
-      {
-        color: '#FFF',
-        src: 'https://cdn.vuetifyjs.com/images/cards/halcyon.png',
-        title: 'クイズタイトル',
-        description: 'Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.'
-      },
-      {
-        color: '#FFF',
-        src: 'https://cdn.vuetifyjs.com/images/cards/halcyon.png',
-        title: 'クイズタイトル',
-        description: 'Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.'
-      },
-      {
-        color: '#FFF',
-        src: 'https://cdn.vuetifyjs.com/images/cards/halcyon.png',
-        title: 'クイズタイトル',
-        description: 'Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.'
-      }
-    ]
-  })
+@Component
+export default class Home extends Vue {
+  categoryName = null
+  titles = []
+  page = 1
+  total = 0
+
+  async getTitlesInfomation(categoryId: number, page: number) {
+    const params = {
+      category_id: categoryId,
+      page: page
+    }
+    const { data } = await axios.get('/titles', { params })
+    this.titles = data.data
+    this.total = data.total
+    this.page = data.current_page
+  }
+
+  async getCategory(categoryId: number) {
+    const params = {
+      category_id: categoryId
+    }
+    const { data } = await axios.get('/category', { params })
+    this.categoryName = data.name
+  }
+
+  async onPagenationClick() {
+    await this.getTitlesInfomation(Number(this.$route.params.id), this.page)
+  }
+
+  async mounted() {
+    await this.getTitlesInfomation(Number(this.$route.params.id), this.page)
+    await this.getCategory(Number(this.$route.params.id))
+  }
 }
 </script>
