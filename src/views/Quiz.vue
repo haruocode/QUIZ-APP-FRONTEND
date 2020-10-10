@@ -1,33 +1,32 @@
 <template>
   <v-container>
-    <h1 class="text-center">クイズタイトル</h1>
+    <h1 class="text-center">{{ quiz.title }}</h1>
     <div class="question-container">
-      <div class="question-number">Q1</div>
-      <div class="question-box">日本で一番高い山の名前は？</div>
+      <div class="question-box">Q.{{ quiz.question }}</div>
 
       <!-- 4択 -->
       <div id="answers">
         <v-row>
           <v-col cols="6">
-            <v-btn x-large block dark color="blue">A. 富士山</v-btn>
+            <v-btn x-large block dark :outlined="selectedAnswer !== 1" color="blue" @click="selectAnswer(1)">A. {{ quiz.answer1 }}</v-btn>
           </v-col>
           <v-col cols="6">
-            <v-btn x-large block dark outlined color="blue">B. 六甲山</v-btn>
+            <v-btn x-large block dark :outlined="selectedAnswer !== 2" color="blue" @click="selectAnswer(2)">B. {{ quiz.answer2 }}</v-btn>
           </v-col>
         </v-row>
 
         <v-row>
           <v-col cols="6">
-            <v-btn x-large block dark outlined color="blue">C. 阿蘇山</v-btn>
+            <v-btn x-large block dark :outlined="selectedAnswer !== 3" color="blue" @click="selectAnswer(3)">C. {{ quiz.answer3 }}</v-btn>
           </v-col>
           <v-col cols="6">
-            <v-btn x-large block dark outlined color="blue">D. 函館山</v-btn>
+            <v-btn x-large block dark :outlined="selectedAnswer !== 4" color="blue" @click="selectAnswer(4)">D. {{ quiz.answer4 }}</v-btn>
           </v-col>
         </v-row>
       </div>
 
       <div class="answer-btn">
-        <v-btn depressed x-large block color="primary" @click.stop="dialog = true">回答する</v-btn>
+        <v-btn depressed x-large block color="primary" @click.stop="postAnswer">回答する</v-btn>
       </div>
 
       <v-dialog v-model="dialog" persistent max-width="600">
@@ -50,12 +49,41 @@
   </v-container>
 </template>
 
-<script>
-export default {
-  data () {
-    return {
-      dialog: false
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator'
+import axios from 'axios'
+
+@Component
+export default class Quiz extends Vue {
+
+  quiz: any = {}
+  selectedAnswer: number | null = null
+  dialog: boolean = false
+  result: any = {}
+
+  async getQuiz(titleId: number, quizId: number) {
+    let params: any = {}
+    params.title_id = this.$route.params.titleId
+    params.quiz_id = this.$route.params.quizId ? this.$route.params.quizId : undefined
+    const { data } = await axios.get(`/quiz`, { params })
+    return data
+  }
+
+  selectAnswer(answer: number) {
+    this.selectedAnswer = answer
+  }
+
+  // クイズの回答を送信する
+  async postAnswer() {
+    const params = {
+      quiz_id: this.quiz.id,
+      answer: this.selectedAnswer
     }
+    this.result = await axios.post(`/quiz/answer`, { ...params })
+  }
+
+  async mounted() {
+    this.quiz = await this.getQuiz(Number(this.$route.params.titleId), Number(this.$route.params.quizId))
   }
 }
 </script>
