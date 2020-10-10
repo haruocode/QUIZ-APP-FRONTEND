@@ -17,7 +17,7 @@
               size="110"
               tile
             >
-              <v-img src="../assets/logo.png"></v-img>
+              <v-img :src="title.thumbnail"></v-img>
             </v-avatar>
             <div>
               <v-card-title
