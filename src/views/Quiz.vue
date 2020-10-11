@@ -31,15 +31,15 @@
 
       <v-dialog v-model="dialog" persistent max-width="600">
         <div class="py-8 white">
-          <div v-if="true" class="text-center blue--text judge-text">〇正解！</div>
+          <div v-if="selectedAnswer === Number(result.answer)" class="text-center blue--text judge-text">〇正解！</div>
           <div v-else class="text-center red--text judge-text">✖不正解</div>
-          <div class="text-center font-weight-bold answer-text">正解は「A. 富士山」</div>
-          <div class="py-3 px-6">説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明。</div>
+          <div class="text-center font-weight-bold answer-text">正解は「{{ answerLabel }}」</div>
+          <div class="py-3 px-6">{{ result.description }}</div>
           <div class="text-center mb-2">
-            <v-btn depressed x-large color="cyan darken-1 white--text" @click.stop="dialog = false">次の問題</v-btn>
+            <v-btn v-if="result.next_quiz_id" depressed x-large color="cyan darken-1 white--text" @click.stop="goToNextQuiz">次の問題</v-btn>
           </div>
           <div class="text-center">
-            <v-btn text color="primary" @click.stop="dialog = false">やめる</v-btn>
+            <v-btn text color="primary" @click.stop="$router.push('/')">トップページへ</v-btn>
           </div>
         </div>
       </v-dialog>
@@ -59,7 +59,11 @@ export default class Quiz extends Vue {
   quiz: any = {}
   selectedAnswer: number | null = null
   dialog: boolean = false
-  result: any = {}
+  result: any = {
+    answer: null,
+    description: null,
+    next_quiz_id: null
+  }
 
   async getQuiz(titleId: number, quizId: number) {
     let params: any = {}
@@ -79,7 +83,20 @@ export default class Quiz extends Vue {
       quiz_id: this.quiz.id,
       answer: this.selectedAnswer
     }
-    this.result = await axios.post(`/quiz/answer`, { ...params })
+    const { data } = await axios.post(`/quiz/answer`, { ...params })
+    this.result = data
+    this.dialog = true
+  }
+
+  get answerLabel() {
+    return eval('this.quiz.answer' + this.result.answer)
+  }
+
+  goToNextQuiz() {
+    this.dialog = false
+    if(this.result.next_quiz_id !== null) {
+      this.$router.push('/quiz/' + this.$route.params.titleId + '/' + this.result.next_quiz_id)
+    }
   }
 
   async mounted() {
