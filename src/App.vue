@@ -6,14 +6,14 @@
       dark
     >
       <div class="d-flex align-center">
-        4択クイズアプリ
+        <a class="title" @click.prevent="$router.push('/')">4択クイズアプリ</a>
       </div>
 
       <v-spacer></v-spacer>
     </v-app-bar>
 
     <v-main>
-      <router-view />
+      <router-view :key="$route.fullPath" />
     </v-main>
   </v-app>
 </template>
@@ -33,3 +33,9 @@ export default Vue.extend({
   })
 })
 </script>
+
+<style scoped>
+.title {
+  color: white;
+}
+</style>
