@@ -38,7 +38,9 @@
         </v-col>
         <v-row>
           <v-col v-for="(category, i) in categories" cols="3" :key="i">
-            <v-card @click="$router.push('/list/' + category.id)">
+            <v-card
+              @click="$router.push('/list/' + category.id)"
+            >
               <v-img
                 :src="category.thumbnail"
                 class="white--text align-end"
@@ -57,20 +59,19 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import axios from 'axios'
 
 @Component
 export default class Home extends Vue {
-  newTitles = []
-  categories = []
+  newTitles: any = []
+  categories: any = []
 
   async getNewTitles() {
-    const { data } = await axios.get('/titles/new')
+    const { data } = await this.axios.get('/titles/new')
     return data
   }
 
   async getCategories() {
-    const { data } = await axios.get('/categories')
+    const { data } = await this.axios.get('/categories')
     return data
   }
 

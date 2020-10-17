@@ -51,7 +51,6 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import axios from 'axios'
 
 @Component
 export default class Quiz extends Vue {
@@ -65,11 +64,11 @@ export default class Quiz extends Vue {
     next_quiz_id: null
   }
 
-  async getQuiz(titleId: number, quizId: number) {
+  async getQuiz() {
     let params: any = {}
     params.title_id = this.$route.params.titleId
     params.quiz_id = this.$route.params.quizId ? this.$route.params.quizId : undefined
-    const { data } = await axios.get(`/quiz`, { params })
+    const { data } = await this.axios.get(`/quiz`, { params })
     return data
   }
 
@@ -83,7 +82,7 @@ export default class Quiz extends Vue {
       quiz_id: this.quiz.id,
       answer: this.selectedAnswer
     }
-    const { data } = await axios.post(`/quiz/answer`, { ...params })
+    const { data } = await this.axios.post(`/quiz/answer`, { ...params })
     this.result = data
     this.dialog = true
   }
@@ -100,7 +99,7 @@ export default class Quiz extends Vue {
   }
 
   async mounted() {
-    this.quiz = await this.getQuiz(Number(this.$route.params.titleId), Number(this.$route.params.quizId))
+    this.quiz = await this.getQuiz()
   }
 }
 </script>

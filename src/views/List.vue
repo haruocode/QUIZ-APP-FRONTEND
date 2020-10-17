@@ -46,21 +46,20 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import axios from 'axios'
 
 @Component
 export default class Home extends Vue {
   categoryName = null
-  titles = []
+  titles: any = []
   page = 1
   total = 0
 
-  async getTitlesInfomation(categoryId: number, page: number) {
+  async getTitlesInformation(categoryId: number, page: number) {
     const params = {
       category_id: categoryId,
       page: page
     }
-    const { data } = await axios.get('/titles', { params })
+    const { data } = await this.axios.get('/titles', { params })
     this.titles = data.data
     this.total = data.total
     this.page = data.current_page
@@ -70,16 +69,16 @@ export default class Home extends Vue {
     const params = {
       category_id: categoryId
     }
-    const { data } = await axios.get('/category', { params })
+    const { data } = await this.axios.get('/category', { params })
     this.categoryName = data.name
   }
 
   async onPagenationClick() {
-    await this.getTitlesInfomation(Number(this.$route.params.id), this.page)
+    await this.getTitlesInformation(Number(this.$route.params.id), this.page)
   }
 
   async mounted() {
-    await this.getTitlesInfomation(Number(this.$route.params.id), this.page)
+    await this.getTitlesInformation(Number(this.$route.params.id), this.page)
     await this.getCategory(Number(this.$route.params.id))
   }
 }
